@@ -1,12 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from "react";
 
 const Voter = () => {
-    const [votedCandidates, setVotedCandidates] = useState(JSON.parse(localStorage.getItem("votedCandidates")) || {});
     const [candidateData, setCandidateData] = useState(JSON.parse(localStorage.getItem("candidateData")) || []);
+    const currentPasskey = localStorage.getItem("currentPasskey"); // Fetch logged-in user's passkey
+
+    useEffect(() => {
+        if (!currentPasskey) {
+            alert("Unauthorized access! Please log in.");
+            window.location.href = "/login.html"; // Redirect to login page if no passkey
+        }
+    }, [currentPasskey]);
 
     const handleVote = (candidate, post) => {
-        // Check if user already voted for this post
-        if (votedCandidates[post]) {
+        // Prevent voting multiple times for the same post
+        const credentials = JSON.parse(localStorage.getItem("credential")) || [];
+        const currentCredential = credentials.find((cred) => cred.passkey === currentPasskey);
+
+        if (!currentCredential) {
+            alert("Unauthorized access! Invalid credentials.");
+            return;
+        }
+
+        if (currentCredential.votedFor && currentCredential.votedFor.includes(post)) {
             alert(`You have already voted for the ${post} position.`);
             return;
         }
@@ -19,14 +34,13 @@ const Voter = () => {
             return c;
         });
 
-        // Save updated data to localStorage
+        // Save updated candidates
         setCandidateData(updatedCandidates);
         localStorage.setItem("candidateData", JSON.stringify(updatedCandidates));
 
-        // Mark the user as having voted for this post
-        const updatedVotedCandidates = { ...votedCandidates, [post]: candidate.name };
-        setVotedCandidates(updatedVotedCandidates);
-        localStorage.setItem("votedCandidates", JSON.stringify(updatedVotedCandidates));
+        // Mark post as voted for in credentials
+        currentCredential.votedFor = [...(currentCredential.votedFor || []), post];
+        localStorage.setItem("credential", JSON.stringify(credentials));
 
         alert(`You voted for ${candidate.name} as ${post}.`);
     };
