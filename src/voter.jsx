@@ -7,7 +7,7 @@ const Voter = () => {
     useEffect(() => {
         if (!currentPasskey) {
             alert("Unauthorized access! Please log in.");
-            window.location.href = "/login.html"; // Redirect to login page if no passkey
+            window.location.href = "https://admin-steel-iota.vercel.app/"; // Redirect to login page if no passkey
         }
     }, [currentPasskey]);
 
