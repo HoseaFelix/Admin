@@ -2,19 +2,20 @@ import React, { useState, useEffect } from "react";
 
 const Voter = () => {
     const [candidateData, setCandidateData] = useState(JSON.parse(localStorage.getItem("candidateData")) || []);
-   
-    const [userPasskey, setUserPasskey] = useState("");
-
- 
+    const [userPasskey, setUserPasskey] = useState(""); // You'll need to get the user passkey from somewhere (e.g., login or localStorage)
 
     const handleVote = (candidate, post) => {
-        
-
-        // Check if the user already voted for this post
+        // Fetch user credentials from localStorage
         const credentials = JSON.parse(localStorage.getItem("credential")) || [];
         const userCredential = credentials.find((cred) => cred.passkey === userPasskey);
 
-        if (userCredential && userCredential.votedPost === post) {
+        if (!userCredential) {
+            alert("User not found.");
+            return;
+        }
+
+        // Check if the user already voted for this post
+        if (userCredential.votedPost === post) {
             alert(`You have already voted for the ${post} position.`);
             return;
         }
@@ -30,14 +31,15 @@ const Voter = () => {
         setCandidateData(updatedCandidates);
         localStorage.setItem("candidateData", JSON.stringify(updatedCandidates));
 
-        // Update the user's voting record
+        // Update the user's voting record to mark the post they voted for
         userCredential.votedPost = post;
         localStorage.setItem("credential", JSON.stringify(credentials));
 
         alert(`You voted for ${candidate.name} as ${post}.`);
     };
+
     const handleLogout = () => {
-            window.location.href = "https://voting-register-xi.vercel.app/"; // Redirect to login page
+        window.location.href = "https://voting-register-xi.vercel.app/"; // Redirect to login page
     };
 
     return (
@@ -62,16 +64,15 @@ const Voter = () => {
                         </button>
                     </div>
                 ))}
-                
             </div>
             <button
-                    onClick={handleLogout}
-                    className="absolute top-4 right-4 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
-                >
-                    Logout
-                </button>
+                onClick={handleLogout}
+                className="absolute top-4 right-4 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
+            >
+                Logout
+            </button>
         </main>
-    ) 
+    );
 };
 
 export default Voter;
