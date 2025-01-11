@@ -6,9 +6,9 @@ const Voter = () => {
     const [userPasskey, setUserPasskey] = useState("");
 
     useEffect(() => {
-        // Extract passkey from URL
-        const params = new URLSearchParams(window.location.search);
-        const passkey = params.get("passkey");
+       
+        
+        const passkey = localStorage.getItem("Passkey") || null;
 
         if (passkey) {
             console.log("Retrieved passkey from URL:", passkey);
