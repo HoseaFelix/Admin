@@ -2,33 +2,65 @@ import React, { useState, useEffect } from "react";
 
 const Voter = () => {
     const [candidateData, setCandidateData] = useState(JSON.parse(localStorage.getItem("candidateData")) || []);
-    const [isAuthorized, setIsAuthorized] = useState(false); // Track authorization
-    const currentPasskey = localStorage.getItem("currentPasskey");
+    const [isAuthorized, setIsAuthorized] = useState(false);
+    const [userPasskey, setUserPasskey] = useState("");
 
     useEffect(() => {
-        // Check if currentPasskey exists and is valid
-        if (currentPasskey) {
-            console.log("Retrieved passkey:", currentPasskey);
+        // Extract passkey from URL
+        const params = new URLSearchParams(window.location.search);
+        const passkey = params.get("passkey");
 
+        if (passkey) {
+            console.log("Retrieved passkey from URL:", passkey);
+
+            // Validate passkey against credentials
             const credentials = JSON.parse(localStorage.getItem("credential")) || [];
-            const matchingCredential = credentials.find((cred) => cred.passkey === currentPasskey);
+            const matchingCredential = credentials.find((cred) => cred.passkey === passkey);
 
             if (matchingCredential) {
-                setIsAuthorized(true); // Authorize user
+                setUserPasskey(passkey);
+                setIsAuthorized(true);
             } else {
                 alert("Unauthorized access! Invalid credentials.");
-                window.location.href = "https://voting-register-xi.vercel.app/"; // Redirect to login page
+                window.location.href = "/login.html"; // Redirect to login page
             }
         } else {
             alert("Unauthorized access! Please log in.");
-            window.location.href = "https://voting-register-xi.vercel.app/"; // Redirect to login page
+            window.location.href = "/login.html"; // Redirect to login page
         }
-    }, [currentPasskey]);
+    }, []);
 
     const handleVote = (candidate, post) => {
         if (!isAuthorized) return; // Prevent voting if unauthorized
 
-        // Validate and update voting logic here...
+        // Check if the user already voted for this post
+        const credentials = JSON.parse(localStorage.getItem("credential")) || [];
+        const userCredential = credentials.find((cred) => cred.passkey === userPasskey);
+
+        if (userCredential && userCredential.votedPost === post) {
+            alert(`You have already voted for the ${post} position.`);
+            return;
+        }
+
+        // Update vote count for the selected candidate
+        const updatedCandidates = candidateData.map((c) => {
+            if (c.name === candidate.name && c.post === post) {
+                return { ...c, voteCount: (c.voteCount || 0) + 1 };
+            }
+            return c;
+        });
+
+        setCandidateData(updatedCandidates);
+        localStorage.setItem("candidateData", JSON.stringify(updatedCandidates));
+
+        // Update the user's voting record
+        userCredential.votedPost = post;
+        localStorage.setItem("credential", JSON.stringify(credentials));
+
+        alert(`You voted for ${candidate.name} as ${post}.`);
+    };
+    const handleLogout = () => {
+            window.location.href = "/login.html"; // Redirect to login page
     };
 
     return isAuthorized ? (
@@ -53,7 +85,14 @@ const Voter = () => {
                         </button>
                     </div>
                 ))}
+                
             </div>
+            <button
+                    onClick={handleLogout}
+                    className="absolute top-4 right-4 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
+                >
+                    Logout
+                </button>
         </main>
     ) : null; // Render nothing if unauthorized
 };
