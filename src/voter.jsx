@@ -2,36 +2,13 @@ import React, { useState, useEffect } from "react";
 
 const Voter = () => {
     const [candidateData, setCandidateData] = useState(JSON.parse(localStorage.getItem("candidateData")) || []);
-    const [isAuthorized, setIsAuthorized] = useState(false);
+   
     const [userPasskey, setUserPasskey] = useState("");
 
-    useEffect(() => {
-       
-        
-        const passkey = localStorage.getItem("Passkey") || null;
-
-        if (passkey) {
-            console.log("Retrieved passkey from URL:", passkey);
-
-            // Validate passkey against credentials
-            const credentials = JSON.parse(localStorage.getItem("credential")) || [];
-            const matchingCredential = credentials.find((cred) => cred.passkey === passkey);
-
-            if (matchingCredential) {
-                setUserPasskey(passkey);
-                setIsAuthorized(true);
-            } else {
-                alert("Unauthorized access! Invalid credentials.");
-                window.location.href = "https://voting-register-xi.vercel.app/"; // Redirect to login page
-            }
-        } else {
-            alert("Unauthorized access! Please log in.");
-            window.location.href = "https://voting-register-xi.vercel.app/"; // Redirect to login page
-        }
-    }, []);
+ 
 
     const handleVote = (candidate, post) => {
-        if (!isAuthorized) return; // Prevent voting if unauthorized
+        
 
         // Check if the user already voted for this post
         const credentials = JSON.parse(localStorage.getItem("credential")) || [];
