@@ -40,7 +40,7 @@ const Voter = () => {
             window.location.href = "https://voting-register-xi.vercel.app/"; // Redirect to login page
     };
 
-    return isAuthorized ? (
+    return (
         <main className="relative min-h-screen w-screen overflow-x-hidden bg-gray-100 flex flex-col items-center justify-center p-6">
             <h1 className="text-3xl font-bold text-gray-800 mb-8">Cast Your Vote</h1>
 
@@ -71,7 +71,7 @@ const Voter = () => {
                     Logout
                 </button>
         </main>
-    ) : null; // Render nothing if unauthorized
+    ) 
 };
 
 export default Voter;
