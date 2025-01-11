@@ -32,6 +32,7 @@ const Voter = () => {
     };
 
     const handleLogout = () => {
+        localStorage.removeItem("votedPosts")
         window.location.href = "https://voting-register-xi.vercel.app/"; // Redirect to login page
     };
 
