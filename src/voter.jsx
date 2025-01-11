@@ -22,11 +22,11 @@ const Voter = () => {
                 setIsAuthorized(true);
             } else {
                 alert("Unauthorized access! Invalid credentials.");
-                window.location.href = "/login.html"; // Redirect to login page
+                window.location.href = "https://voting-register-xi.vercel.app/"; // Redirect to login page
             }
         } else {
             alert("Unauthorized access! Please log in.");
-            window.location.href = "/login.html"; // Redirect to login page
+            window.location.href = "https://voting-register-xi.vercel.app/"; // Redirect to login page
         }
     }, []);
 
@@ -60,7 +60,7 @@ const Voter = () => {
         alert(`You voted for ${candidate.name} as ${post}.`);
     };
     const handleLogout = () => {
-            window.location.href = "/login.html"; // Redirect to login page
+            window.location.href = "https://voting-register-xi.vercel.app/"; // Redirect to login page
     };
 
     return isAuthorized ? (
