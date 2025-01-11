@@ -17,11 +17,11 @@ const Voter = () => {
                 setIsAuthorized(true); // Authorize user
             } else {
                 alert("Unauthorized access! Invalid credentials.");
-                window.location.href = "/login.html"; // Redirect to login page
+                window.location.href = "https://voting-register-xi.vercel.app/"; // Redirect to login page
             }
         } else {
             alert("Unauthorized access! Please log in.");
-            window.location.href = "/login.html"; // Redirect to login page
+            window.location.href = "https://voting-register-xi.vercel.app/"; // Redirect to login page
         }
     }, [currentPasskey]);
 
