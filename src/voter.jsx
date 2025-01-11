@@ -45,7 +45,6 @@ const Voter = () => {
                         />
                         <h2 className="text-lg font-bold text-gray-800">{candidate.name}</h2>
                         <p className="text-sm text-gray-600">{candidate.post}</p>
-                        <p className="mt-2 text-sm font-medium text-blue-600">Vote Count: {candidate.voteCount || 0}</p>
                         <button
                             onClick={() => handleVote(candidate, candidate.post)}
                             className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
