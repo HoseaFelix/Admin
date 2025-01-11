@@ -2,20 +2,11 @@ import React, { useState, useEffect } from "react";
 
 const Voter = () => {
     const [candidateData, setCandidateData] = useState(JSON.parse(localStorage.getItem("candidateData")) || []);
-    const [userPasskey, setUserPasskey] = useState(""); // You'll need to get the user passkey from somewhere (e.g., login or localStorage)
+    const [votedPosts, setVotedPosts] = useState(JSON.parse(localStorage.getItem("votedPosts")) || {}); // Track which post the user has voted for
 
     const handleVote = (candidate, post) => {
-        // Fetch user credentials from localStorage
-        const credentials = JSON.parse(localStorage.getItem("credential")) || [];
-        const userCredential = credentials.find((cred) => cred.passkey === userPasskey);
-
-        if (!userCredential) {
-            alert("User not found.");
-            return;
-        }
-
-        // Check if the user already voted for this post
-        if (userCredential.votedPost === post) {
+        // Check if the user has already voted for this post
+        if (votedPosts[post]) {
             alert(`You have already voted for the ${post} position.`);
             return;
         }
@@ -28,12 +19,14 @@ const Voter = () => {
             return c;
         });
 
+        // Update the candidate data in the state and localStorage
         setCandidateData(updatedCandidates);
         localStorage.setItem("candidateData", JSON.stringify(updatedCandidates));
 
-        // Update the user's voting record to mark the post they voted for
-        userCredential.votedPost = post;
-        localStorage.setItem("credential", JSON.stringify(credentials));
+        // Mark that the user has voted for this post
+        const updatedVotedPosts = { ...votedPosts, [post]: true };
+        setVotedPosts(updatedVotedPosts);
+        localStorage.setItem("votedPosts", JSON.stringify(updatedVotedPosts));
 
         alert(`You voted for ${candidate.name} as ${post}.`);
     };
